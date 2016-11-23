@@ -73,6 +73,7 @@ echo 'Checking number of windows...'
 windows=($(wmctrl -l | grep -v unity | grep -v Xdnd | grep -v Hud | grep -v Desktop | cut -c 1-10))
 
 if [ ${#windows[@]} -lt 13 ]; then
+	echo ''
 	echo 'You must have at least 13 open windows to play'
 	echo 'You only have' ${#windows[@]} 'windows open'
 	exit 0
@@ -84,9 +85,19 @@ echo 'Figuring out which windows are usable...'
 get_good_windows ${windows[@]} good_windows
 
 if [ ${#good_windows[@]} -lt 13 ]; then
+	echo ''
 	echo 'You must have at least 13 good windows to play'
 	echo 'A window is good if it can be resized to any size'
 	echo 'Only' ${#good_windows[@]} 'of your windows are good'
+
+	read -p "Do you want to know which ones are good? " -n 1 -r
+	echo ''
+	if [[ $REPLY =~ ^[Yy]$ ]]; then 
+		for wind in ${good_windows[@]}; do
+			get_name $wind name
+			echo $wind $name
+		done
+	fi
 	exit 0
 fi
 
