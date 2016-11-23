@@ -24,6 +24,9 @@ score2winds=()
 paddle1winds=()
 paddle2winds=()
 
+half=$(( ((${#windows[@]}-10))/2 ))
+rest=$((${#windows[@]}-10-$half))
+
 for i in $(seq 0 4); do
 	score1winds[i]=${windows[i]}
 done
@@ -32,13 +35,16 @@ for i in $(seq 0 4); do
 	score2winds[i]=${windows[i+5]}
 done
 
-half=$(( ((${#windows[@]}-10))/2 ))
-
 for i in $(seq 1 $half); do
 	paddle1winds[i-1]=${windows[i+9]}
+done
+
+for i in $(seq 1 $rest); do
+	paddle2winds[i-1]=${windows[i+9+$half]}
 done
 
 print_winds ${windows[@]}
 print_winds ${score1winds[@]}
 print_winds ${score2winds[@]}
 print_winds ${paddle1winds[@]}
+print_winds ${paddle2winds[@]}
