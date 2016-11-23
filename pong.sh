@@ -10,6 +10,18 @@ function print_winds() {
 	echo ''
 }
 
+function draw_paddle1() {
+	echo 'unimplemented'
+}
+
+# Constants
+WIDTH=$1   #Input screen dimensions
+HEIGHT=$2
+
+# Program Treats all displays as if they are 100 x 100
+PADDLE_WIDTH=10
+PADDLE_HEIGHT=30
+
 # Get IDs of all windows (except for a few we don't want to mess with)
 windows=($(wmctrl -l | grep -v unity | grep -v Xdnd | grep -v Hud | grep -v Desktop | cut -c 1-10))
 
@@ -43,8 +55,11 @@ for i in $(seq 1 $rest); do
 	paddle2winds[i-1]=${windows[i+9+$half]}
 done
 
-print_winds ${windows[@]}
-print_winds ${score1winds[@]}
-print_winds ${score2winds[@]}
-print_winds ${paddle1winds[@]}
-print_winds ${paddle2winds[@]}
+# "Block comment"
+if [ 1 -eq 0 ]; then
+	print_winds ${windows[@]}
+	print_winds ${score1winds[@]}
+	print_winds ${score2winds[@]}
+	print_winds ${paddle1winds[@]}
+	print_winds ${paddle2winds[@]}
+fi
