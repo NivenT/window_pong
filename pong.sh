@@ -45,6 +45,11 @@ function get_good_windows() {
 	done
 }
 
+function get_terminal_id() {
+	info=($(xwininfo | grep "Window id"))
+	eval "$1=${info[3]}"
+}
+
 function clear_screen() {
 	for wind in ${windows[@]}; do
 		xdotool windowminimize $wind
@@ -141,9 +146,32 @@ function draw_game() {
 	draw_ball $ballx $bally
 }
 
-function bound_ball() {
+function bounce_ball() {
 	if [ $bally -le $BALL_SIZE ] || [ $bally -ge $((100-BALL_SIZE)) ]; then
 		ballydir=$((-$ballydir))
+	fi
+}
+
+function move_ball() {
+	bounce_ball
+	ballx=$(($ballx + $BALL_X_SPEED*$ballxdir))
+	bally=$(($bally + $BALL_Y_SPEED*$ballydir))
+}
+
+function handle_input() {
+	wmctrl -i -R $termwind
+
+	read input
+
+	if [ "$input" == "w" ]; then
+		pos1=$(($pos1-1))
+		draw_paddle1 $pos1
+	elif [ "$input" == "s" ]; then
+		pos1=$(($pos1+1))
+		draw_paddle1 $pos1
+	elif [ "$input" == "q" ]; then
+		echo 'Thanks for playing'
+		over=true
 	fi
 }
 
@@ -156,12 +184,12 @@ PADDLE_WIDTH=3
 PADDLE_HEIGHT=25
 PADDLE_BUFFER=5
 
-BALL_SIZE=3
+BALL_SIZE=1
 BALL_X_SPEED=1
 BALL_Y_SPEED=2
 
 # Number of seconds to pause between frames
-SLEEP_DURR=0.125
+SLEEP_DURR=0
 
 echo 'Checking number of windows...'
 
@@ -174,6 +202,10 @@ if [ ${#windows[@]} -lt 13 ]; then
 	echo 'You only have' ${#windows[@]} 'windows open'
 	exit 0
 fi
+
+echo 'Please click in the terminal you are running this script from'
+get_terminal_id termwind
+echo 'The id for this terminal is' $termwind
 
 echo 'Figuring out which windows are usable...'
 
@@ -246,17 +278,27 @@ score1=0
 score2=0
 ballx=50
 bally=50
-ballxdir=1
+ballxdir=-1
 ballydir=1
+over=false
 
+move_window $termwind $WIDTH $HEIGHT
 clear_screen
 draw_game
-while [ $score1 -lt 7 ] && [ $score2 -lt 7 ]; do
-	bound_ball
-	ballx=$(($ballx + $BALL_X_SPEED*$ballxdir))
-	bally=$(($bally + $BALL_Y_SPEED*$ballydir))
+
+stty -icanon time 0 min 0
+while ! $over; do
+	handle_input
+	move_ball
 
 	draw_ball $ballx $bally
 
 	sleep $SLEEP_DURR
+
+	if [ $score1 -ge 7 ] || [ $score2 -ge 7 ]; then
+		over=true
+	fi
 done
+
+move_window $termwind 0 0
+stty sane
