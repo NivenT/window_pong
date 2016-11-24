@@ -162,7 +162,6 @@ function handle_input() {
 	wmctrl -i -R $termwind
 
 	read input
-
 	if [ "$input" == "w" ]; then
 		pos1=$(($pos1-1))
 		draw_paddle1 $pos1
@@ -172,6 +171,20 @@ function handle_input() {
 	elif [ "$input" == "q" ]; then
 		echo 'Thanks for playing'
 		over=true
+	fi
+}
+
+function handle_collision() {
+	if [ $ballx -ge $PADDLE_BUFFER ] && [ $ballx -le $(($PADDLE_BUFFER+$PADDLE_WIDTH)) ]; then
+		if [ $bally -ge $pos1 ] && [ $bally -le $(($pos1+$PADDLE_HEIGHT)) ]; then
+			ballxdir=$((-$ballxdir))
+		fi
+	fi
+
+	if [ $ballx -ge $((100-$PADDLE_BUFFER-$PADDLE_WIDTH)) ] && [ $ballx -le $((100-$PADDLE_BUFFER)) ]; then
+		if [ $bally -ge $pos2 ] && [ $bally -le $(($pos2+$PADDLE_HEIGHT)) ]; then
+			ballxdir=$((-$ballxdir))
+		fi
 	fi
 }
 
@@ -290,6 +303,7 @@ stty -icanon time 0 min 0
 while ! $over; do
 	handle_input
 	move_ball
+	handle_collision
 
 	draw_ball $ballx $bally
 
