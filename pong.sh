@@ -129,6 +129,24 @@ function draw_score2() {
 	fi
 }
 
+function draw_ball() {
+	draw_window $ballwindow $1 $2 $BALL_SIZE $BALL_SIZE 0
+}
+
+function draw_game() {
+	draw_paddle1 $pos1
+	draw_paddle2 $pos2
+	draw_score1 $score1
+	draw_score2 $score2
+	draw_ball $ballx $bally
+}
+
+function bound_ball() {
+	if [ $bally -le $BALL_SIZE ] || [ $bally -ge $((100-BALL_SIZE)) ]; then
+		ballydir=$((-$ballydir))
+	fi
+}
+
 # Constants
 WIDTH=$1   #Input screen dimensions
 HEIGHT=$2
@@ -137,6 +155,13 @@ HEIGHT=$2
 PADDLE_WIDTH=3
 PADDLE_HEIGHT=25
 PADDLE_BUFFER=5
+
+BALL_SIZE=3
+BALL_X_SPEED=1
+BALL_Y_SPEED=2
+
+# Number of seconds to pause between frames
+SLEEP_DURR=0.125
 
 echo 'Checking number of windows...'
 
@@ -215,8 +240,23 @@ fi
 
 echo 'Initializing game...'
 
+pos1=35
+pos2=35
+score1=0
+score2=0
+ballx=50
+bally=50
+ballxdir=1
+ballydir=1
+
 clear_screen
-draw_paddle1 35
-draw_paddle2 35
-draw_score1 0
-draw_score2 0
+draw_game
+while [ $score1 -lt 7 ] && [ $score2 -lt 7 ]; do
+	bound_ball
+	ballx=$(($ballx + $BALL_X_SPEED*$ballxdir))
+	bally=$(($bally + $BALL_Y_SPEED*$ballydir))
+
+	draw_ball $ballx $bally
+
+	sleep $SLEEP_DURR
+done
