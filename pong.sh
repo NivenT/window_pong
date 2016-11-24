@@ -47,8 +47,7 @@ function get_good_windows() {
 
 function clear_screen() {
 	for wind in ${windows[@]}; do
-		wmctrl -i -R $wind
-		wmctrl -i -r $wind -b add,shaded
+		xdotool windowminimize $wind
 	done
 }
 
@@ -74,43 +73,60 @@ function convert_y() {
 	eval "$2=$(( (($1*$HEIGHT))/100 ))"
 }
 
+function draw_window() {
+	convert_x $(($2 + $6)) x
+	convert_y $3 y
+	convert_x $4 w
+	convert_y $5 h
+
+	wmctrl -i -R $1
+	wmctrl -i -r $1 -b remove,maximized_vert,maximized_horz
+	wmctrl -i -r $1 -e 0,$x,$y,$w,$h
+}
+
 # Draws the player's paddle at the given height
 function draw_paddle1() {
-	convert_x $PADDLE_BUFFER x
-	convert_y $1 y
-	convert_x $PADDLE_WIDTH w
-	convert_y $PADDLE_HEIGHT h
-
 	# height of each individual window
-	h1=$(($h/${#paddle1winds[@]}))
+	h1=$(($PADDLE_HEIGHT/${#paddle1winds[@]}))
 	# y position of current window
-	y1=$y
+	y1=$1
 
 	for wind in ${paddle1winds[@]}; do
-		resize_window $wind $w $h1
-		move_window $wind $x $y1
-
+		draw_window $wind $PADDLE_BUFFER $y1 $PADDLE_WIDTH $h1 0
 		y1=$(($y1+$h1))
 	done
 }
 
 function draw_paddle2() {
-	convert_x $((100-$PADDLE_BUFFER-$PADDLE_WIDTH)) x
-	convert_y $1 y
-	convert_x $PADDLE_WIDTH w
-	convert_y $PADDLE_HEIGHT h
-
 	# height of each individual window
-	h1=$(($h/${#paddle1winds[@]}))
+	h1=$(($PADDLE_HEIGHT/${#paddle1winds[@]}))
 	# y position of current window
-	y1=$y
+	y1=$1
 
 	for wind in ${paddle2winds[@]}; do
-		resize_window $wind $w $h1
-		move_window $wind $x $y1
-
+		draw_window $wind $((100-$PADDLE_BUFFER-$PADDLE_WIDTH)) $y1 $PADDLE_WIDTH $h1 0
 		y1=$(($y1+$h1))
 	done
+}
+
+function draw_score1() {
+	if [ $1 -eq 0 ]; then
+		draw_window ${score1winds[0]} 37 3 7 3 0
+		draw_window ${score1winds[1]} 37 3 7 3 0
+		draw_window ${score1winds[2]} 44 3 3 17 0
+		draw_window ${score1winds[3]} 40 20 7 3 0
+		draw_window ${score1winds[4]} 37 6 3 17 0
+	fi
+}
+
+function draw_score2() {
+	if [ $1 -eq 0 ]; then
+		draw_window ${score2winds[0]} 37 3 7 3 16
+		draw_window ${score2winds[1]} 37 3 7 3 16
+		draw_window ${score2winds[2]} 44 3 3 17 16
+		draw_window ${score2winds[3]} 40 20 7 3 16
+		draw_window ${score2winds[4]} 37 6 3 17 16
+	fi
 }
 
 # Constants
@@ -202,3 +218,5 @@ echo 'Initializing game...'
 clear_screen
 draw_paddle1 35
 draw_paddle2 35
+draw_score1 0
+draw_score2 0
