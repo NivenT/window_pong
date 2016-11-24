@@ -22,12 +22,6 @@ function get_name() {
 	eval "$2=${info[3]}"
 }
 
-function resize_window() {
-	wmctrl -i -R $1
-	wmctrl -i -r $1 -b remove,maximized_vert,maximized_horz
-	wmctrl -i -r $1 -e 0,-1,-1,$2,$3
-}
-
 function get_good_windows() {
 	# Get last argument
 	for last; do true; done
@@ -51,11 +45,72 @@ function get_good_windows() {
 	done
 }
 
+function clear_screen() {
+	for wind in ${windows[@]}; do
+		wmctrl -i -R $wind
+		wmctrl -i -r $wind -b add,shaded
+	done
+}
+
+function resize_window() {
+	wmctrl -i -R $1
+	wmctrl -i -r $1 -b remove,maximized_vert,maximized_horz
+	wmctrl -i -r $1 -e 0,-1,-1,$2,$3
+}
+
+function move_window() {
+	wmctrl -i -R $1
+	wmctrl -i -r $1 -b remove,maximized_vert,maximized_horz
+	wmctrl -i -r $1 -e 0,$2,$3,-1,-1
+}
+
+# Converts given position or dimension from game coordinates to screen coordinates
+# Converts along x-axis
+function convert_x() {
+	eval "$2=$(( (($1*$WIDTH))/100 ))"
+}
+
+function convert_y() {
+	eval "$2=$(( (($1*$HEIGHT))/100 ))"
+}
+
 # Draws the player's paddle at the given height
 function draw_paddle1() {
-	wmctrl -i -R ${paddle1winds[0]}
-	wmctrl -i -r ${paddle1winds[0]} -b remove,maximized_vert,maximized_horz
-	wmctrl -i -r ${paddle1winds[0]} -e 0,100,100,20,500
+	convert_x $PADDLE_BUFFER x
+	convert_y $1 y
+	convert_x $PADDLE_WIDTH w
+	convert_y $PADDLE_HEIGHT h
+
+	# height of each individual window
+	h1=$(($h/${#paddle1winds[@]}))
+	# y position of current window
+	y1=$y
+
+	for wind in ${paddle1winds[@]}; do
+		resize_window $wind $w $h1
+		move_window $wind $x $y1
+
+		y1=$(($y1+$h1))
+	done
+}
+
+function draw_paddle2() {
+	convert_x $((100-$PADDLE_BUFFER-$PADDLE_WIDTH)) x
+	convert_y $1 y
+	convert_x $PADDLE_WIDTH w
+	convert_y $PADDLE_HEIGHT h
+
+	# height of each individual window
+	h1=$(($h/${#paddle1winds[@]}))
+	# y position of current window
+	y1=$y
+
+	for wind in ${paddle2winds[@]}; do
+		resize_window $wind $w $h1
+		move_window $wind $x $y1
+
+		y1=$(($y1+$h1))
+	done
 }
 
 # Constants
@@ -63,9 +118,9 @@ WIDTH=$1   #Input screen dimensions
 HEIGHT=$2
 
 # Program Treats all displays as if they are 100 x 100
-PADDLE_WIDTH=10
-PADDLE_HEIGHT=30
-PADDLE_BUFFER=10
+PADDLE_WIDTH=3
+PADDLE_HEIGHT=25
+PADDLE_BUFFER=5
 
 echo 'Checking number of windows...'
 
@@ -101,17 +156,20 @@ if [ ${#good_windows[@]} -lt 13 ]; then
 	exit 0
 fi
 
+echo 'Found' ${#good_windows[@]} 'usable windows'
+
 # Separate windows into their individual functions
 score1winds=()
 score2winds=()
+ballwindow=$good_windows[10]
 paddle1winds=()
 paddle2winds=()
 
 # Each score number gets 5 windows
 # All extra windows are split roughly evenly between the two paddles
 
-half=$(( ((${#good_windows[@]}-10))/2 ))
-rest=$((${#good_windows[@]}-10-$half))
+half=$(( ((${#good_windows[@]}-11))/2 ))
+rest=$((${#good_windows[@]}-11-$half))
 
 for i in $(seq 0 4); do
 	score1winds[i]=${good_windows[i]}
@@ -122,11 +180,11 @@ for i in $(seq 0 4); do
 done
 
 for i in $(seq 1 $half); do
-	paddle1winds[i-1]=${good_windows[i+9]}
+	paddle1winds[i-1]=${good_windows[i+10]}
 done
 
 for i in $(seq 1 $rest); do
-	paddle2winds[i-1]=${good_windows[i+9+$half]}
+	paddle2winds[i-1]=${good_windows[i+10+$half]}
 done
 
 # "Block comment"
@@ -141,4 +199,6 @@ fi
 
 echo 'Initializing game...'
 
+clear_screen
 draw_paddle1 35
+draw_paddle2 35
