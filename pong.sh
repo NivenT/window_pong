@@ -252,6 +252,29 @@ function handle_collision() {
 	fi
 }
 
+function check_score() {
+	if [ $ballx -ge 100 ]; then
+		#score1=$(($score1+1))
+		reset_positions
+		draw_game
+	elif [ $ballx -le 0 ]; then
+		#score2=$(($score2+1))
+		reset_positions
+		draw_game
+	fi
+}
+
+function reset_positions() {
+	pos1=35
+	pos2=35
+	score1=0
+	score2=0
+	ballx=50
+	bally=50
+	ballxdir=$(( 2*(($RANDOM%2)) - 1))
+	ballydir=$(( 2*(($RANDOM%2)) - 1))
+}
+
 echo 'Checking number of windows...'
 
 # Get IDs of all windows (except for a few we don't want to mess with)
@@ -335,14 +358,7 @@ fi
 
 echo 'Initializing game...'
 
-pos1=35
-pos2=35
-score1=0
-score2=0
-ballx=50
-bally=50
-ballxdir=-1
-ballydir=$(( 2*(($RANDOM%2)) - 1))
+reset_positions
 over=false
 
 # Move terminal off screen
@@ -359,6 +375,7 @@ while ! $over; do
 	move_computer
 	move_ball
 	handle_collision
+	check_score
 
 	draw_ball $ballx $bally
 
