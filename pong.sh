@@ -407,6 +407,7 @@ while ! $over; do
 	fi
 done
 
+echo ''
 echo 'Thanks for playing'
 echo 'Cleaning up...'
 # Fix stuff
