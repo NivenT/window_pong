@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Constants
-WIDTH=$1   #Input screen dimensions
-HEIGHT=$2
-
+###########################
+###      Constants      ###
+###########################
 # Program Treats all displays as if they are 100 x 100
 PADDLE_WIDTH=3
 PADDLE_HEIGHT=25
@@ -19,6 +18,11 @@ COMPUTER_SPEED=3
 # Number of seconds to pause between frames
 SLEEP_DURR=0
 
+
+###########################
+###      Functions      ###
+###########################
+
 # Print all Window IDs in an array.
 # Used mostly more debugging purposes
 function print_winds() {
@@ -28,6 +32,12 @@ function print_winds() {
 		cnt=$(($cnt+1))
 	done
 	echo ''
+}
+
+function get_screen_dimensions() {
+	info=($(xrandr | grep current))
+	eval "$1=${info[7]}"
+	eval "$2=$(echo ${info[9]} | rev | cut -c 2- | rev)"
 }
 
 function get_position() {
@@ -277,6 +287,14 @@ function reset_positions() {
 	ballxdir=$(( 2*(($RANDOM%2)) - 1))
 	ballydir=$(( 2*(($RANDOM%2)) - 1))
 }
+
+
+########################
+###      Script      ###
+########################
+
+get_screen_dimensions WIDTH HEIGHT
+echo 'Screen dimensions:' $WIDTH 'x' $HEIGHT
 
 echo 'Checking number of windows...'
 
