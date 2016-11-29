@@ -1,5 +1,5 @@
 # window_pong
-Playing Pong with open Windows on Ubuntu
+Playing Pong with open windows on Ubuntu
 
 <img src="https://github.com/NivenT/window_pong/blob/master/screenshot.png" alt="Screenshot" width="800" height="400">
 
@@ -23,7 +23,7 @@ While writing this, I ran into the issue of some windows not being resizable and
 At this point, the game has begun. Use `w` and `s` to move your paddle up and down, respectively. Press `q` to quit the program. You can also quit using `Ctrl+c` but this frowned upon because it stops the program from cleaning up after itself.
 
 # TODO
-- [ ] Implement an AI for the computer's paddle
+- [X] Implement an AI for the computer's paddle
 - [ ] Make numbers other than 0 drawable
 - [ ] Update score when ball makes it past a paddle
 - [ ] Make everything smoother if possible
