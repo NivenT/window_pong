@@ -230,11 +230,11 @@ function move_computer() {
 	if [ $ballxdir == 1 ]; then
 		# Move paddle more frequently when ball gets close
 		if [ $ballx -lt 50 ]; then
-			urgency=5
+			urgency=8
 		elif [ $ballx -lt 75 ]; then
-			urgency=2
+			urgency=4
 		else
-			urgency=1
+			urgency=2
 		fi
 
 		# Only moves sometimes so that it is constantly slowing things down
