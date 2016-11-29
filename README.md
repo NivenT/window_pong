@@ -24,7 +24,7 @@ At this point, the game has begun. Use `w` and `s` to move your paddle up and do
 
 # TODO
 - [X] Implement an AI for the computer's paddle
-- [ ] Make numbers other than 0 drawable
-- [ ] Update score when ball makes it past a paddle
+- [X] Make numbers other than 0 drawable
+- [X] Update score when ball makes it past a paddle
 - [ ] Make everything smoother if possible
 - [ ] Get screen dimensions automatically so user does not have to supply them
