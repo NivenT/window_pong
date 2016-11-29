@@ -13,6 +13,7 @@ BALL_SIZE=1
 BALL_X_SPEED=1
 BALL_Y_SPEED=2
 
+PLAYER_SPEED=2
 COMPUTER_SPEED=3
 
 # Number of seconds to pause between frames
@@ -230,10 +231,10 @@ function handle_input() {
 
 	read input
 	if [ "$input" == "w" ] || [ "$input" == "W" ]; then
-		pos1=$(($pos1-1))
+		pos1=$(($pos1-$PLAYER_SPEED))
 		draw_paddle1 $pos1
 	elif [ "$input" == "s" ] || [ "$input" == "S" ]; then
-		pos1=$(($pos1+1))
+		pos1=$(($pos1+$PLAYER_SPEED))
 		draw_paddle1 $pos1
 	elif [ "$input" == "q" ] || [ "$input" == "Q" ]; then
 		over=true
