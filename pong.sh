@@ -212,7 +212,7 @@ function move_ball() {
 
 function move_computer() {
 	# Only moves if the ball is coming towards it
-	if [ $ballxdir == 1 ] && [ $(($RANDOM%5)) == 0 ]; then
+	if [ $ballxdir == 1 ]; then
 		# Move paddle more frequently when ball gets close
 		if [ $ballx -lt 50 ]; then
 			urgency=5
@@ -225,10 +225,10 @@ function move_computer() {
 		# Only moves sometimes so that it is constantly slowing things down
 		if [ $(($RANDOM%$urgency)) == 0 ]; then
 			center=$(( $pos2 + ((PADDLE_HEIGHT/2)) ))
-			if [ $center -gt $bally ]; then
+			if [ $center -gt $bally ] && [ $ballydir == -1 ]; then
 				pos2=$(($pos2-$COMPUTER_SPEED))
 				draw_paddle2 $pos2
-			else
+			elif [ $center -lt $bally ] && [ $ballydir == 1 ]; then
 				pos2=$(($pos2+$COMPUTER_SPEED))
 				draw_paddle2 $pos2
 			fi
