@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Constants
+WIDTH=$1   #Input screen dimensions
+HEIGHT=$2
+
+# Program Treats all displays as if they are 100 x 100
+PADDLE_WIDTH=3
+PADDLE_HEIGHT=25
+PADDLE_BUFFER=5
+
+BALL_SIZE=1
+BALL_X_SPEED=1
+BALL_Y_SPEED=2
+
+COMPUTER_SPEED=3
+
+# Number of seconds to pause between frames
+SLEEP_DURR=0
+
 # Print all Window IDs in an array.
 # Used mostly more debugging purposes
 function print_winds() {
@@ -181,17 +199,41 @@ function move_ball() {
 	bally=$(($bally + $BALL_Y_SPEED*$ballydir))
 }
 
+function move_computer() {
+	# Only moves if the ball is coming towards it
+	if [ $ballxdir == 1 ] && [ $(($RANDOM%5)) == 0 ]; then
+		# Move paddle more frequently when ball gets close
+		if [ $ballx -lt 50 ]; then
+			urgency=5
+		else
+			urgency=2
+		fi
+
+		# Only moves sometimes so that it is constantly slowing things down
+		if [ $(($RANDOM%$urgency)) == 0 ]; then
+			center=$(( $pos2 + ((PADDLE_HEIGHT/2)) ))
+			if [ $center -gt $bally ]; then
+				pos2=$(($pos2-$COMPUTER_SPEED))
+				draw_paddle2 $pos2
+			else
+				pos2=$(($pos2+$COMPUTER_SPEED))
+				draw_paddle2 $pos2
+			fi
+		fi
+	fi
+}
+
 function handle_input() {
 	wmctrl -i -R $termwind
 
 	read input
-	if [ "$input" == "w" ]; then
+	if [ "$input" == "w" ] || [ "$input" == "W" ]; then
 		pos1=$(($pos1-1))
 		draw_paddle1 $pos1
-	elif [ "$input" == "s" ]; then
+	elif [ "$input" == "s" ] || [ "$input" == "S" ]; then
 		pos1=$(($pos1+1))
 		draw_paddle1 $pos1
-	elif [ "$input" == "q" ]; then
+	elif [ "$input" == "q" ] || [ "$input" == "Q" ]; then
 		over=true
 	fi
 }
@@ -209,22 +251,6 @@ function handle_collision() {
 		fi
 	fi
 }
-
-# Constants
-WIDTH=$1   #Input screen dimensions
-HEIGHT=$2
-
-# Program Treats all displays as if they are 100 x 100
-PADDLE_WIDTH=3
-PADDLE_HEIGHT=25
-PADDLE_BUFFER=5
-
-BALL_SIZE=1
-BALL_X_SPEED=1
-BALL_Y_SPEED=2
-
-# Number of seconds to pause between frames
-SLEEP_DURR=0
 
 echo 'Checking number of windows...'
 
@@ -316,7 +342,7 @@ score2=0
 ballx=50
 bally=50
 ballxdir=-1
-ballydir=1
+ballydir=$(( 2*(($RANDOM%2)) - 1))
 over=false
 
 # Move terminal off screen
@@ -330,6 +356,7 @@ echo 'Starting game...'
 stty -icanon time 0 min 0 
 while ! $over; do
 	handle_input
+	move_computer
 	move_ball
 	handle_collision
 
