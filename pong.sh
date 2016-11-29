@@ -11,6 +11,12 @@ function print_winds() {
 	echo ''
 }
 
+function get_position() {
+	info=($(wmctrl -lG | grep $1))
+	eval "$2=${info[2]}"
+	eval "$3=${info[3]}"
+}
+
 function get_dimensions() {
 	info=($(wmctrl -lG | grep $1))
 	eval "$2=${info[4]}"
@@ -42,6 +48,23 @@ function get_good_windows() {
 		fi
 
 		resize_window $wind $w0 $h0
+	done
+}
+
+function get_window_states() {
+	for last; do true; done
+
+	cnt=0
+	for wind; do
+		if [ "$wind" == "$last" ]; then
+			continue
+		fi
+
+		get_position $wind x y
+		get_dimensions $wind w h
+
+		eval "$last[$cnt]=\"$wind $x $y $w $h\""
+		cnt=$(($cnt+1))
 	done
 }
 
@@ -169,7 +192,6 @@ function handle_input() {
 		pos1=$(($pos1+1))
 		draw_paddle1 $pos1
 	elif [ "$input" == "q" ]; then
-		echo 'Thanks for playing'
 		over=true
 	fi
 }
@@ -224,6 +246,8 @@ echo 'Figuring out which windows are usable...'
 
 # Only use windows which can be arbitrarily resized
 get_good_windows ${windows[@]} good_windows
+# Store the state of the windows so they can restored later
+get_window_states ${good_windows[@]} window_states
 
 if [ ${#good_windows[@]} -lt 13 ]; then
 	echo ''
@@ -295,11 +319,15 @@ ballxdir=-1
 ballydir=1
 over=false
 
+# Move terminal off screen
 move_window $termwind $WIDTH $HEIGHT
 clear_screen
 draw_game
 
-stty -icanon time 0 min 0
+echo 'Starting game...'
+
+# Essentially makes read time 0 so read doesn't stall program 
+stty -icanon time 0 min 0 
 while ! $over; do
 	handle_input
 	move_ball
@@ -314,5 +342,14 @@ while ! $over; do
 	fi
 done
 
-move_window $termwind 0 0
+echo 'Thanks for playing'
+echo 'Cleaning up...'
+# Fix stuff
 stty sane
+# Move terminal back on screen
+move_window $termwind 0 0
+# Move used windows back to where they were
+for i in $(seq 0 ${#window_states[@]}); do
+	state=(${window_states[$i]})
+	draw_window ${state[0]} ${state[1]} ${state[2]} ${state[3]} ${state[4]} 0
+done
