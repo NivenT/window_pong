@@ -159,7 +159,7 @@ function draw_paddle1() {
 
 function draw_paddle2() {
 	# height of each individual window
-	h1=$(($PADDLE_HEIGHT/${#paddle1winds[@]}))
+	h1=$(($PADDLE_HEIGHT/${#paddle2winds[@]}))
 	# y position of current window
 	y1=$1
 
