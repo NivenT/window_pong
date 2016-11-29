@@ -18,6 +18,9 @@ COMPUTER_SPEED=3
 # Number of seconds to pause between frames
 SLEEP_DURR=0
 
+# Largest score that drawing has been implemented for
+MAX_SCORE=1
+
 
 ###########################
 ###      Functions      ###
@@ -173,6 +176,12 @@ function draw_score1() {
 		draw_window ${score1winds[2]} 44 3 3 17 0
 		draw_window ${score1winds[3]} 40 20 7 3 0
 		draw_window ${score1winds[4]} 37 6 3 17 0
+	elif [ $1 -eq 1 ]; then
+		draw_window ${score1winds[0]} 40 3 4 20 0
+		draw_window ${score1winds[1]} 40 3 4 20 0
+		draw_window ${score1winds[2]} 40 3 4 20 0
+		draw_window ${score1winds[3]} 40 3 4 20 0
+		draw_window ${score1winds[4]} 40 3 4 20 0
 	fi
 }
 
@@ -183,6 +192,12 @@ function draw_score2() {
 		draw_window ${score2winds[2]} 44 3 3 17 16
 		draw_window ${score2winds[3]} 40 20 7 3 16
 		draw_window ${score2winds[4]} 37 6 3 17 16
+	elif [ $1 -eq 1 ]; then
+		draw_window ${score2winds[0]} 40 3 4 20 16
+		draw_window ${score2winds[1]} 40 3 4 20 16
+		draw_window ${score2winds[2]} 40 3 4 20 16
+		draw_window ${score2winds[3]} 40 3 4 20 16
+		draw_window ${score2winds[4]} 40 3 4 20 16
 	fi
 }
 
@@ -267,11 +282,15 @@ function handle_collision() {
 
 function check_score() {
 	if [ $ballx -ge 100 ]; then
-		#score1=$(($score1+1))
+		if [ $score1 -lt $MAX_SCORE ]; then
+			score1=$(($score1+1))
+		fi
 		reset_positions
 		draw_game
 	elif [ $ballx -le 0 ]; then
-		#score2=$(($score2+1))
+		if [ $score2 -lt $MAX_SCORE ]; then
+			score2=$(($score2+1))
+		fi
 		reset_positions
 		draw_game
 	fi
@@ -280,8 +299,6 @@ function check_score() {
 function reset_positions() {
 	pos1=35
 	pos2=35
-	score1=0
-	score2=0
 	ballx=50
 	bally=50
 	ballxdir=$(( 2*(($RANDOM%2)) - 1))
@@ -379,9 +396,10 @@ fi
 
 echo 'Initializing game...'
 
-reset_positions
+score1=0
+score2=0
 over=false
-
+reset_positions
 # Move terminal off screen
 move_window $termwind $WIDTH $HEIGHT
 clear_screen
