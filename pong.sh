@@ -220,8 +220,8 @@ function draw_ball() {
 function draw_game() {
 	draw_paddle1 $pos1
 	draw_paddle2 $pos2
-	draw_score1 $score1
-	draw_score2 $score2
+	#draw_score1 $score1
+	#draw_score2 $score2
 	draw_ball $ballx $bally
 }
 
@@ -296,12 +296,14 @@ function check_score() {
 	if [ $ballx -ge 100 ]; then
 		if [ $score1 -lt $MAX_SCORE ]; then
 			score1=$(($score1+1))
+			draw_score1 $score1
 		fi
 		reset_positions
 		draw_game
 	elif [ $ballx -le 0 ]; then
 		if [ $score2 -lt $MAX_SCORE ]; then
 			score2=$(($score2+1))
+			draw_score2 $score2
 		fi
 		reset_positions
 		draw_game
@@ -415,6 +417,8 @@ reset_positions
 # Move terminal off screen
 move_window $termwind $WIDTH $HEIGHT
 clear_screen
+draw_score1 $score1
+draw_score2 $score2
 draw_game
 
 echo 'Starting game...'
