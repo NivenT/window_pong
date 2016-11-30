@@ -370,7 +370,7 @@ echo 'Found' ${#good_windows[@]} 'usable windows'
 # Separate windows into their individual functions
 score1winds=()
 score2winds=()
-ballwindow=$good_windows[10]
+ballwindow=${good_windows[10]}
 paddle1winds=()
 paddle2winds=()
 
