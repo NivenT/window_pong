@@ -57,7 +57,7 @@ function get_dimensions() {
 
 function get_name() {
 	info=($(wmctrl -l | grep $1))
-	eval "$2=${info[3]}"
+	eval "$2=\"${info[@]:3}\""
 }
 
 function get_good_windows() {
