@@ -17,10 +17,3 @@ Once the program is run, it will first count how many windows you have open. In 
 While writing this, I ran into the issue of some windows not being resizable and some windows having some minimum size that was still too big to be part of pong. To address this issue, the program attempts to resize all your windows, and only uses the ones that can be resized arbitrarily small for displaying the game. This means that you need 13 arbitrarily resizeable windows for the program to run. Unfortunately, in my expierience, this means opening a bunch of junk sublime text windows. Assuming you've made it passed this part, the program will minimize all your windows and draw the game of pong over your desktop using only the good windows.
 
 At this point, the game has begun. Use `w` and `s` to move your paddle up and down, respectively. Press `q` to quit the program. You can also quit using `Ctrl+c` but this frowned upon because it stops the program from cleaning up after itself.
-
-# TODO
-- [X] Implement an AI for the computer's paddle
-- [X] Make numbers other than 0 drawable
-- [X] Update score when ball makes it past a paddle
-- [ ] Make everything smoother if possible
-- [ ] Get screen dimensions automatically so user does not have to supply them
