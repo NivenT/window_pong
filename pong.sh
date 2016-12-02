@@ -204,7 +204,7 @@ function draw_score1() {
 		draw_window ${score1winds[0]} 40 3 7 3 0
 		draw_window ${score1winds[1]} 37 3 3 8 0
 		draw_window ${score1winds[2]} 37 11 7 3 0
-		draw_window ${score1winds[3]} 45 11 3 12 0
+		draw_window ${score1winds[3]} 44 11 3 12 0
 		draw_window ${score1winds[4]} 37 20 7 3 0
 	fi
 }
@@ -244,7 +244,7 @@ function draw_score2() {
 		draw_window ${score2winds[0]} 40 3 7 3 16
 		draw_window ${score2winds[1]} 37 3 3 8 16
 		draw_window ${score2winds[2]} 37 11 7 3 16
-		draw_window ${score2winds[3]} 45 11 3 12 16
+		draw_window ${score2winds[3]} 44 11 3 12 16
 		draw_window ${score2winds[4]} 37 20 7 3 16
 	fi
 }
