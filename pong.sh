@@ -19,7 +19,7 @@ COMPUTER_SPEED=5
 SLEEP_DURR=0
 
 # Largest score that drawing has been implemented for
-MAX_SCORE=4
+MAX_SCORE=5
 
 
 ###########################
@@ -200,6 +200,12 @@ function draw_score1() {
 		draw_window ${score1winds[2]} 37 10 10 3 0
 		draw_window ${score1winds[3]} 37 10 10 3 0
 		draw_window ${score1winds[4]} 44 3 3 20 0
+	elif [ $1 -eq 5 ]; then
+		draw_window ${score1winds[0]} 40 3 7 3 0
+		draw_window ${score1winds[1]} 37 3 3 8 0
+		draw_window ${score1winds[2]} 37 11 7 3 0
+		draw_window ${score1winds[3]} 45 11 3 12 0
+		draw_window ${score1winds[4]} 37 20 7 3 0
 	fi
 }
 
@@ -234,6 +240,12 @@ function draw_score2() {
 		draw_window ${score2winds[2]} 37 10 10 3 16
 		draw_window ${score2winds[3]} 37 10 10 3 16
 		draw_window ${score2winds[4]} 44 3 3 20 16
+	elif [ $1 -eq 5 ]; then
+		draw_window ${score2winds[0]} 40 3 7 3 16
+		draw_window ${score2winds[1]} 37 3 3 8 16
+		draw_window ${score2winds[2]} 37 11 7 3 16
+		draw_window ${score2winds[3]} 45 11 3 12 16
+		draw_window ${score2winds[4]} 37 20 7 3 16
 	fi
 }
 
