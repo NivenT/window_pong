@@ -266,22 +266,36 @@ function move_computer() {
 	if [ $ballxdir == 1 ]; then
 		# Move paddle more frequently when ball gets close
 		if [ $ballx -lt 50 ]; then
-			urgency=8
+			urgency=10
 		elif [ $ballx -lt 75 ]; then
-			urgency=4
+			urgency=6
 		else
 			urgency=2
 		fi
 
 		# Only moves sometimes so that it is constantly slowing things down
 		if [ $(($RANDOM%$urgency)) == 0 ]; then
-			center=$(( $pos2 + ((PADDLE_HEIGHT/2)) ))
-			if [ $center -gt $bally ] && [ $ballydir == -1 ]; then
-				pos2=$(($pos2-$COMPUTER_SPEED))
-				draw_paddle2 $pos2
-			elif [ $center -lt $bally ] && [ $ballydir == 1 ]; then
-				pos2=$(($pos2+$COMPUTER_SPEED))
-				draw_paddle2 $pos2
+			if [ 1 -eq 0 ]; then
+				center=$(( $pos2 + (($PADDLE_HEIGHT/2)) ))
+				if [ $center -gt $bally ] && [ $ballydir == -1 ]; then
+					pos2=$(($pos2-$COMPUTER_SPEED))
+					draw_paddle2 $pos2
+				elif [ $center -lt $bally ] && [ $ballydir == 1 ]; then
+					pos2=$(($pos2+$COMPUTER_SPEED))
+					draw_paddle2 $pos2
+				fi
+			else
+				center=$(( $pos2 + (($PADDLE_HEIGHT/2)) ))
+				pos2x=$((100 - $PADDLE_BUFFER - $PADDLE_WIDTH))
+				steps=$(( (($pos2x - $ballx))/$BALL_X_SPEED ))
+				ballfuturey=$(( $bally + $steps*(($ballydir*$BALL_Y_SPEED)) ))
+				if [ $center -gt $ballfuturey ]; then
+					pos2=$(($pos2-$COMPUTER_SPEED))
+					draw_paddle2 $pos2
+				elif [ $center -lt $ballfuturey ]; then
+					pos2=$(($pos2+$COMPUTER_SPEED))
+					draw_paddle2 $pos2
+				fi
 			fi
 		fi
 	fi
