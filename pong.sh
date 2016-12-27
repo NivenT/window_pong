@@ -16,7 +16,8 @@ PLAYER_SPEED=4
 COMPUTER_SPEED=5
 
 # Number of seconds to pause between frames
-SLEEP_DURR=0
+FRAME_SLEEP_DURR=0
+OVER_SLEEP_DURR=10
 
 # Largest score that drawing has been implemented for
 MAX_SCORE=7
@@ -286,6 +287,51 @@ function draw_game() {
 	draw_ball $ballx $bally
 }
 
+# These next two should probably be made bigger
+
+# Drawn in 20x50 box with topleft at (25,40)
+function draw_win() {
+	clear_screen
+
+	# W
+	draw_window ${good_windows[0]} 40 25 3 17 0
+	draw_window ${good_windows[1]} 43 39 5 3 0
+	draw_window ${good_windows[2]} 48 25 3 17 0
+	draw_window ${good_windows[3]} 51 39 6 3 0
+	draw_window ${good_windows[4]} 57 25 3 17 0
+	# I
+	draw_window ${good_windows[5]} 48 42 4 13 0
+	#draw_window ${good_windows[6]} 40 55 20 3 0
+	# N
+	draw_window ${good_windows[7]}  40 58 4 17 0
+	draw_window ${good_windows[8]}  44 58 4 6 0
+	draw_window ${good_windows[9]}  48 64 4 5 0
+	draw_window ${good_windows[10]} 52 69 4 6 0
+	draw_window ${good_windows[11]} 56 58 4 17 0
+}
+
+# Drawn in 20x60 box with topleft at (20,40)
+function draw_lose() {
+	clear_screen
+
+	# L
+	draw_window ${good_windows[0]} 40 20 3 12 0
+	draw_window ${good_windows[1]} 40 32 20 3 0
+	# O
+	draw_window ${good_windows[2]} 40 35 3 12 0
+	draw_window ${good_windows[3]} 40 47 20 3 0
+	draw_window ${good_windows[4]} 57 35 3 12 0
+	# S
+	draw_window ${good_windows[5]} 40 50 3 7 0
+	draw_window ${good_windows[6]} 43 54 14 3 0
+	draw_window ${good_windows[7]} 57 54 3 8 0
+	draw_window ${good_windows[8]} 40 62 20 3 0
+	# E
+	draw_window ${good_windows[9]}  40 65 3 12 0
+	draw_window ${good_windows[10]} 43 71 13 3 0
+	draw_window ${good_windows[11]} 40 77 20 3 0
+}
+
 function bounce_ball() {
 	if [ $bally -le $BALL_SIZE ] || [ $bally -ge $((100-BALL_SIZE)) ]; then
 		ballydir=$((-$ballydir))
@@ -485,8 +531,8 @@ fi
 
 echo 'Initializing game...'
 
-score1=$MAX_SCORE
-score2=$MAX_SCORE
+score1=0
+score2=0
 over=false
 reset_positions
 # Move terminal off screen
@@ -509,10 +555,16 @@ while ! $over; do
 
 	draw_ball $ballx $bally
 
-	sleep $SLEEP_DURR
+	sleep $FRAME_SLEEP_DURR
 
-	if [ $score1 -ge 7 ] || [ $score2 -ge 7 ]; then
+	if [ $score1 -ge 7 ]; then
 		over=true
+		draw_win
+		sleep $OVER_SLEEP_DURR
+	elif [ $score2 -ge 7 ]; then
+		over=true
+		draw_lose
+		sleep $OVER_SLEEP_DURR
 	fi
 done
 
@@ -521,10 +573,10 @@ echo 'Thanks for playing'
 echo 'Cleaning up...'
 # Fix stuff
 stty sane
-# Move terminal back on screen
-move_window $termwind 0 0
 # Move used windows back to where they were
 for i in $(seq 0 ${#window_states[@]}); do
 	state=(${window_states[$i]})
 	draw_window ${state[0]} ${state[1]} ${state[2]} ${state[3]} ${state[4]} 0
 done
+# Move terminal back on screen
+move_window $termwind 0 0
