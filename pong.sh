@@ -19,7 +19,7 @@ COMPUTER_SPEED=5
 SLEEP_DURR=0
 
 # Largest score that drawing has been implemented for
-MAX_SCORE=5
+MAX_SCORE=6
 
 
 ###########################
@@ -169,6 +169,7 @@ function draw_paddle2() {
 	done
 }
 
+# Numbers generally drawn in a 10x20 box 3 units from the center and 3 units from the top
 function draw_score1() {
 	if [ $1 -eq 0 ]; then
 		draw_window ${score1winds[0]} 37 3 7 3 0
@@ -206,6 +207,12 @@ function draw_score1() {
 		draw_window ${score1winds[2]} 37 11 7 3 0
 		draw_window ${score1winds[3]} 44 11 3 12 0
 		draw_window ${score1winds[4]} 37 20 7 3 0
+	elif [ $1 -eq 6 ]; then
+		draw_window ${score1winds[0]} 40 3 7 3 0
+		draw_window ${score1winds[1]} 37 3 3 17 0
+		draw_window ${score1winds[2]} 37 20 7 3 0
+		draw_window ${score1winds[3]} 44 13 3 10 0
+		draw_window ${score1winds[4]} 40 13 7 3 0
 	fi
 }
 
@@ -246,6 +253,12 @@ function draw_score2() {
 		draw_window ${score2winds[2]} 37 11 7 3 16
 		draw_window ${score2winds[3]} 44 11 3 12 16
 		draw_window ${score2winds[4]} 37 20 7 3 16
+	elif [ $1 -eq 6 ]; then
+		draw_window ${score2winds[0]} 40 3 7 3 16
+		draw_window ${score2winds[1]} 37 3 3 17 16
+		draw_window ${score2winds[2]} 37 20 7 3 16
+		draw_window ${score2winds[3]} 44 13 3 10 16
+		draw_window ${score2winds[4]} 40 13 7 3 16
 	fi
 }
 
@@ -460,8 +473,8 @@ fi
 
 echo 'Initializing game...'
 
-score1=0
-score2=0
+score1=0 # $MAX_SCORE
+score2=0 # $MAX_SCORE
 over=false
 reset_positions
 # Move terminal off screen
