@@ -19,7 +19,7 @@ COMPUTER_SPEED=5
 SLEEP_DURR=0
 
 # Largest score that drawing has been implemented for
-MAX_SCORE=6
+MAX_SCORE=7
 
 
 ###########################
@@ -213,6 +213,12 @@ function draw_score1() {
 		draw_window ${score1winds[2]} 37 20 7 3 0
 		draw_window ${score1winds[3]} 44 13 3 10 0
 		draw_window ${score1winds[4]} 40 13 7 3 0
+	elif [ $1 -eq 7 ]; then
+		draw_window ${score1winds[0]} 37 3 3 5 0
+		draw_window ${score1winds[1]} 40 3 7 3 0
+		draw_window ${score1winds[2]} 44 6 3 17 0
+		draw_window ${score1winds[3]} 37 3 3 5 0
+		draw_window ${score1winds[4]} 37 3 3 5 0
 	fi
 }
 
@@ -259,6 +265,12 @@ function draw_score2() {
 		draw_window ${score2winds[2]} 37 20 7 3 16
 		draw_window ${score2winds[3]} 44 13 3 10 16
 		draw_window ${score2winds[4]} 40 13 7 3 16
+	elif [ $1 -eq 7 ]; then
+		draw_window ${score2winds[0]} 37 3 3 5 16
+		draw_window ${score2winds[1]} 40 3 7 3 16
+		draw_window ${score2winds[2]} 44 6 3 17 16
+		draw_window ${score2winds[3]} 37 3 3 5 16
+		draw_window ${score2winds[4]} 37 3 3 5 16
 	fi
 }
 
@@ -473,8 +485,8 @@ fi
 
 echo 'Initializing game...'
 
-score1=0 # $MAX_SCORE
-score2=0 # $MAX_SCORE
+score1=$MAX_SCORE
+score2=$MAX_SCORE
 over=false
 reset_positions
 # Move terminal off screen
